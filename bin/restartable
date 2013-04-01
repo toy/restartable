@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby2.0
+
+require 'optparse'
+require 'restartable'
+
+options = {}
+option_parser = OptionParser.new do |op|
+  op.banner = <<-TEXT
+#{op.program_name} v#{Restartable.version}
+
+Usege:
+  #{op.program_name} [options] command [arg…]
+
+  TEXT
+
+  op.on_tail('-h', '--help', 'Show full help') do
+    puts option_parser.help
+    exit
+  end
+
+  op.on_tail('--version', 'Show version') do
+    puts Restartable.version
+    exit
+  end
+end
+
+begin
+  option_parser.order!
+  raise OptionParser::ParseError, 'No command to run' if ARGV.empty?
+rescue OptionParser::ParseError => e
+  abort "#{e.to_s}\n\n#{option_parser.help}"
+end
+
+Restartable.new(options) do
+  system *ARGV
+end
