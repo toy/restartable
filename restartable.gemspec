@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
   s.require_paths = %w[lib]
 
   s.add_dependency 'colored', '~> 1.2'
-  s.add_dependency 'sys-proctable', '~> 0.7.6'
+  s.add_dependency 'sys-proctable', '~> 0.9.3'
 end
