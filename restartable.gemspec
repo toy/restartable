@@ -15,5 +15,6 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = %w[lib]
 
-  s.add_dependency 'colored'
+  s.add_dependency 'colored', '~> 1.2'
+  s.add_dependency 'sys-proctable', '~> 0.7.6'
 end
