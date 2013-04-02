@@ -2,6 +2,7 @@
 
 require 'sys/proctable'
 require 'colored'
+require 'thread'
 
 class Restartable
   def self.version
