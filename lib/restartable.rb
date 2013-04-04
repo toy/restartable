@@ -43,7 +43,7 @@ class Restartable
       puts '^C to restart, double ^C to stop'.green
       begin
         @block.call
-        sleep # wait ^C even if block finishes
+        loop{ sleep } # wait ^C even if block finishes
       rescue SignalException
         unless children.empty?
           puts 'Killing children…'.yellow.bold
