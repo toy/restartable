@@ -1,2 +1,3 @@
-run block on restart
+add option to run block on restart
 bin option to run command on restart
+option to auto restart when block finishes
