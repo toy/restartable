@@ -9,10 +9,12 @@ class Restartable
     Gem.loaded_specs['restartable'].version.to_s rescue 'DEV'
   end
 
-  WAIT_SIGNALS = [[1, 'INT'], [1, 'INT'], [1, 'INT'], [1, 'TERM'], [5, 'KILL']]
-
   def initialize(options, &block)
     @options, @block = options, block
+    run!
+  end
+
+  def run!
     @mutex = Mutex.new
     synced_trap('INT'){ interrupt! }
     synced_trap('TERM'){ no_restart!; interrupt! }
@@ -36,6 +38,8 @@ class Restartable
     @stop = true
     puts 'Don\'t restart!'.red.bold
   end
+
+  WAIT_SIGNALS = [[1, 'INT'], [1, 'INT'], [1, 'INT'], [1, 'TERM'], [5, 'KILL']]
 
   def cycle
     until @stop
