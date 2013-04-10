@@ -42,10 +42,8 @@ private
   def interrupt!
     unless @interrupted
       @interrupted = true
-      Thread.list.each do |thread|
-        unless Thread.current == thread
-          thread.raise SignalException.new('INT')
-        end
+      (Thread.list - [Thread.current]).each do |thread|
+        thread.raise SignalException.new('INT')
       end
     else
       no_restart!
@@ -81,10 +79,10 @@ private
         loop{ sleep } # wait ^C even if block finishes
       rescue SignalException
         kill_children!
-        unless @stop
-          puts 'Waiting ^C 0.5 second than restart…'.yellow.bold
-          sleep 0.5
-        end
+      end
+      unless @stop
+        puts 'Waiting ^C 0.5 second than restart…'.yellow.bold
+        sleep 0.5
       end
     end
   end
@@ -101,9 +99,7 @@ private
           end
         end
       end
-      children_pids.each do |child_pid|
-        Process.wait child_pid
-      end
+      children_pids.each(&Process.method(:wait))
       ripper.terminate
     end
   end
