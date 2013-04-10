@@ -80,27 +80,31 @@ private
         @block.call
         loop{ sleep } # wait ^C even if block finishes
       rescue SignalException
-        unless children_pids.empty?
-          puts 'Killing children…'.yellow.bold
-          ripper = Thread.new do
-            WAIT_SIGNALS.each do |time, signal|
-              sleep time
-              puts "…SIG#{signal}…".yellow
-              children_pids.each do |child_pid|
-                Process.kill(signal, child_pid)
-              end
-            end
-          end
-          children_pids.each do |child_pid|
-            Process.wait child_pid
-          end
-          ripper.terminate
-        end
+        kill_children!
         unless @stop
           puts 'Waiting ^C 0.5 second than restart…'.yellow.bold
           sleep 0.5
         end
       end
+    end
+  end
+
+  def kill_children!
+    unless children_pids.empty?
+      puts 'Killing children…'.yellow.bold
+      ripper = Thread.new do
+        WAIT_SIGNALS.each do |time, signal|
+          sleep time
+          puts "…SIG#{signal}…".yellow
+          children_pids.each do |child_pid|
+            Process.kill(signal, child_pid)
+          end
+        end
+      end
+      children_pids.each do |child_pid|
+        Process.wait child_pid
+      end
+      ripper.terminate
     end
   end
 
