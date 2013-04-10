@@ -14,10 +14,28 @@ class Restartable
     run!
   end
 
+private
+
   def run!
     @mutex = Mutex.new
-    synced_trap('INT'){ interrupt! }
-    synced_trap('TERM'){ no_restart!; interrupt! }
+
+    receiver, sender = IO.pipe
+    @trap_sender = Process.fork do
+      receiver.close
+      Signal.trap('PIPE', 'EXIT')
+      synced_trap('INT'){ Marshal.dump(:int, sender) }
+      loop{ sleep }
+    end
+    sender.close
+
+    Signal.trap('INT', 'IGNORE')
+    synced_trap('TERM'){ terminate! }
+
+    int_receiver = Thread.new do
+      until receiver.eof?
+        Marshal.load(receiver) && interrupt!
+      end
+    end
     cycle
   end
 
@@ -34,9 +52,22 @@ class Restartable
     end
   end
 
+  def terminate!
+    no_restart!
+    interrupt!
+  end
+
   def no_restart!
     @stop = true
     puts 'Don\'t restart!'.red.bold
+  end
+
+  def synced_trap(signal, &block)
+    Signal.trap(signal) do
+      Thread.new do
+        @mutex.synchronize(&block)
+      end
+    end
   end
 
   WAIT_SIGNALS = [[1, 'INT'], [1, 'INT'], [1, 'INT'], [1, 'TERM'], [5, 'KILL']]
@@ -60,7 +91,9 @@ class Restartable
               end
             end
           end
-          Process.waitall
+          children.each do |child|
+            Process.wait child.pid
+          end
           ripper.terminate
         end
         unless @stop
@@ -71,18 +104,7 @@ class Restartable
     end
   end
 
-private
-
-  def synced_trap(signal, &block)
-    Signal.trap(signal) do
-      Thread.new do
-        @mutex.synchronize(&block)
-      end
-    end
-  end
-
   def children
-    pid = Process.pid
-    Sys::ProcTable.ps.select{ |pe| pid == pe.ppid }
+    Sys::ProcTable.ps.select{ |pe| $$ == pe.ppid }.reject{ |pe| @trap_sender == pe.pid }
   end
 end
