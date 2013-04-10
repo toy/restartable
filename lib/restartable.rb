@@ -80,19 +80,19 @@ private
         @block.call
         loop{ sleep } # wait ^C even if block finishes
       rescue SignalException
-        unless children.empty?
+        unless children_pids.empty?
           puts 'Killing children…'.yellow.bold
           ripper = Thread.new do
             WAIT_SIGNALS.each do |time, signal|
               sleep time
               puts "…SIG#{signal}…".yellow
-              children.each do |child|
-                Process.kill(signal, child.pid)
+              children_pids.each do |child_pid|
+                Process.kill(signal, child_pid)
               end
             end
           end
-          children.each do |child|
-            Process.wait child.pid
+          children_pids.each do |child_pid|
+            Process.wait child_pid
           end
           ripper.terminate
         end
@@ -104,7 +104,7 @@ private
     end
   end
 
-  def children
-    Sys::ProcTable.ps.select{ |pe| $$ == pe.ppid }.reject{ |pe| @trap_sender == pe.pid }
+  def children_pids
+    Sys::ProcTable.ps.select{ |pe| $$ == pe.ppid }.map(&:pid) - [@trap_sender]
   end
 end
