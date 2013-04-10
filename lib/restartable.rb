@@ -70,7 +70,7 @@ private
     end
   end
 
-  WAIT_SIGNALS = [[1, 'INT'], [1, 'INT'], [1, 'INT'], [1, 'TERM'], [5, 'KILL']]
+  WAIT_SIGNALS = [[5, 'INT'], [3, 'INT'], [1, 'INT'], [3, 'TERM'], [5, 'KILL']]
 
   def cycle
     until @stop
