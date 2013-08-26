@@ -52,4 +52,24 @@ describe Restartable do
       system 'sleep 30'
     end
   end
+
+  it "should work for fork" do
+    check_for do
+      fork do
+        sleep 30
+      end
+    end
+  end
+
+  it "should work for nested fork" do
+    check_for do
+      fork do
+        fork do
+          fork do
+            sleep 30
+          end
+        end
+      end
+    end
+  end
 end
