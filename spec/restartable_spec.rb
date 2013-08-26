@@ -9,6 +9,8 @@ describe Restartable do
     pid = fork do
       receiver.close
       Process.setpgrp
+      STDOUT.reopen('/dev/null', 'w')
+      STDERR.reopen('/dev/null', 'w')
       Restartable.new do
         Marshal.dump(:started, sender)
         block.call
