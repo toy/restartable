@@ -9,7 +9,7 @@ class Restartable
     Gem.loaded_specs['restartable'].version.to_s rescue 'DEV'
   end
 
-  def initialize(options, &block)
+  def initialize(options = {}, &block)
     @options, @block = options, block
     run!
   end
