@@ -17,94 +17,71 @@ class Restartable
 private
 
   def run!
-    @mutex = Mutex.new
-
-    receiver, sender = IO.pipe
-    @trap_sender = Process.fork do
-      receiver.close
-      Signal.trap('PIPE', 'EXIT')
-      synced_trap('INT'){ Marshal.dump(:int, sender) }
-      loop{ sleep }
-    end
-    sender.close
-
-    Signal.trap('INT', 'IGNORE')
-    synced_trap('TERM'){ terminate! }
-
-    int_receiver = Thread.new do
-      until receiver.eof?
-        Marshal.load(receiver) && interrupt!
+    Signal.trap('INT') do
+      interrupt!
+      if @cpid
+        Process.kill('INT', -@cpid) rescue nil
       end
     end
-    cycle
-  end
-
-  def interrupt!
-    unless @interrupted
-      @interrupted = true
-      (Thread.list - [Thread.current]).each do |thread|
-        thread.raise SignalException.new('INT')
-      end
-    else
-      no_restart!
+    Signal.trap('TERM') do
+      terminate!
     end
-  end
 
-  def terminate!
-    no_restart!
-    interrupt!
-  end
-
-  def no_restart!
-    @stop = true
-    puts 'Don\'t restart!'.red.bold
-  end
-
-  def synced_trap(signal, &block)
-    Signal.trap(signal) do
-      Thread.new do
-        @mutex.synchronize(&block)
-      end
-    end
-  end
-
-  WAIT_SIGNALS = [[5, 'INT'], [3, 'INT'], [1, 'INT'], [3, 'TERM'], [5, 'KILL']]
-
-  def cycle
     until @stop
-      @interrupted = false
-      puts '^C to restart, double ^C to stop'.green
-      begin
+      @interrupted = nil
+      $stderr << "^C to restart, double ^C to stop\n".green
+      @cpid = fork do
+        Process.setpgrp
+        Signal.trap('INT', 'DEFAULT')
+        Signal.trap('TERM', 'DEFAULT')
         @block.call
-        loop{ sleep } # wait ^C even if block finishes
-      rescue SignalException
-        kill_children!
       end
+      sleep 0.1 until @interrupted
+      kill_children!
       unless @stop
-        puts 'Waiting ^C 0.5 second than restart…'.yellow.bold
+        $stderr << "Waiting ^C 0.5 second than restart…\n".yellow.bold
         sleep 0.5
       end
     end
   end
 
-  def kill_children!
-    unless children_pids.empty?
-      puts 'Killing children…'.yellow.bold
-      ripper = Thread.new do
-        WAIT_SIGNALS.each do |time, signal|
-          sleep time
-          puts "…SIG#{signal}…".yellow
-          children_pids.each do |child_pid|
-            Process.kill(signal, child_pid)
-          end
-        end
-      end
-      children_pids.each(&Process.method(:wait))
-      ripper.terminate
+  def interrupt!
+    if @interrupted
+      @stop = true
+      $stderr << "Don't restart!\n".red.bold
+    else
+      @interrupted = true
     end
   end
 
-  def children_pids
-    Sys::ProcTable.ps.select{ |pe| $$ == pe.ppid }.map(&:pid) - [@trap_sender]
+  def terminate!
+    interrupt!
+    interrupt!
+  end
+
+  WAIT_SIGNALS = [[5, 'INT'], [3, 'INT'], [1, 'INT'], [3, 'TERM'], [5, 'KILL']]
+
+  def kill_children!
+    until (pids = Sys::ProcTable.ps.select{ |pe| @cpid == pe.pgid }.map(&:pid)).empty?
+      $stderr << "Killing children…\n".yellow.bold
+      ripper = Thread.new do
+        WAIT_SIGNALS.each do |time, signal|
+          sleep time
+          $stderr << "…SIG#{signal}…\n".yellow
+          Process.kill('INT', -@cpid)
+        end
+      end
+      Process.waitall
+      pids.each do |pid|
+        begin
+          loop do
+            Process.kill(0, pid)
+            sleep 1
+          end
+        rescue Errno::ESRCH
+        end
+      end
+      ripper.terminate
+    end
   end
 end
