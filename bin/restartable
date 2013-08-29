@@ -33,5 +33,5 @@ rescue OptionParser::ParseError => e
 end
 
 Restartable.new(options) do
-  system *ARGV
+  exec *ARGV
 end
