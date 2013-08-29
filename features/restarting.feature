@@ -6,6 +6,7 @@ Feature: Restarting
     When I have waited for 1 second
     Then I should see "^C to restart, double ^C to stop" in stderr
     And I should see "Hello world!" in stdout
+    And there should be an inner process
     When I interrupt restartable
     Then I should see "Killing children…" and "Waiting ^C 0.5 second than restart…" in stderr
     And inner process should terminate
@@ -13,6 +14,7 @@ Feature: Restarting
     When I have waited for 1 second
     Then I should see "^C to restart, double ^C to stop" in stderr
     And I should see "Hello world!" in stdout
+    And there should be inner process
     When I interrupt restartable twice
     Then I should see "Killing children…" and "Don't restart!" in last 3 lines of stderr
     And inner process should terminate

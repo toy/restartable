@@ -54,7 +54,12 @@ When(/^I interrupt restartable twice$/) do
   Process.kill('INT', -@pid)
 end
 
+Then(/^there should be an inner process$/) do
+  Sys::ProcTable.ps.any?{ |pe| pe.ppid == @cpid }
+end
+
 Then(/^inner process should terminate$/) do
+  Sys::ProcTable.ps.none?{ |pe| pe.ppid == @cpid }
 end
 
 Then(/^restartable should finish$/) do
