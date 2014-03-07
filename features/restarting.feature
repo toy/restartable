@@ -24,8 +24,8 @@ Feature: Restarting
       | code                        |
       | $stdout.puts "Hello world!" |
       | $stdout.puts "Hello world!"; 100.times{ sleep 1 } |
-      | exec 'echo "Hello world!"; 100.times{ sleep 1 }' |
-      | system 'echo "Hello world!"; 100.times{ sleep 1 }' |
+      | exec 'echo "Hello world!"; sleep 100' |
+      | system 'echo "Hello world!"; sleep 100' |
       | fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } |
       | fork{ fork{ fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } } } |
       | Signal.trap("INT"){}; Signal.trap("TERM"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 } |
