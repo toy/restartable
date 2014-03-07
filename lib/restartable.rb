@@ -68,7 +68,7 @@ private
         WAIT_SIGNALS.each do |time, signal|
           sleep time
           $stderr << "…SIG#{signal}…\n".yellow
-          Process.kill('INT', -@cpid)
+          Process.kill(signal, -@cpid)
         end
       end
       Process.waitall
