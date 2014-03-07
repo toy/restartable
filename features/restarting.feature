@@ -23,8 +23,8 @@ Feature: Restarting
     Examples:
       | code                        |
       | $stdout.puts "Hello world!" |
-      | $stdout.puts "Hello world!"; sleep 30 |
-      | exec 'echo "Hello world!"; sleep 30' |
-      | system 'echo "Hello world!"; sleep 30' |
-      | fork{ $stdout.puts "Hello world!"; sleep 30 } |
-      | fork{ fork{ fork{ $stdout.puts "Hello world!"; sleep 30 } } } |
+      | $stdout.puts "Hello world!"; 100.times{ sleep 1 } |
+      | exec 'echo "Hello world!"; 100.times{ sleep 1 }' |
+      | system 'echo "Hello world!"; 100.times{ sleep 1 }' |
+      | fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } |
+      | fork{ fork{ fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } } } |
