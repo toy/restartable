@@ -16,15 +16,16 @@ Feature: Restarting
     And I should see "Hello world!" in stdout
     And there should be an inner process
     When I interrupt restartable twice
-    Then I should see "Killing children…" and "Don't restart!" in last 3 lines of stderr
+    Then I should see "Killing children…" and "Don't restart!" in stderr
     And inner process should terminate
     And restartable should finish
 
     Examples:
       | code                        |
       | $stdout.puts "Hello world!" |
-      | $stdout.puts "Hello world!"; sleep 30 |
-      | exec 'echo "Hello world!"; sleep 30' |
-      | system 'echo "Hello world!"; sleep 30' |
-      | fork{ $stdout.puts "Hello world!"; sleep 30 } |
-      | fork{ fork{ fork{ $stdout.puts "Hello world!"; sleep 30 } } } |
+      | $stdout.puts "Hello world!"; 100.times{ sleep 1 } |
+      | exec 'echo "Hello world!"; 100.times{ sleep 1 }' |
+      | system 'echo "Hello world!"; 100.times{ sleep 1 }' |
+      | fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } |
+      | fork{ fork{ fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } } } |
+      | Signal.trap("INT"){}; Signal.trap("TERM"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 } |

@@ -33,13 +33,14 @@ Then(/^I should see "(.*?)" in stdout$/) do |string|
   end
 end
 
-Then(/^I should see "(.*?)" in (?:last (\d+) lines of )?stderr$/) do |arg, line_count|
-  Timeout::timeout(5) do
+Then(/^I should see "(.*?)" in stderr$/) do |arg|
+  Timeout::timeout(60) do
     strings = arg.split(/".*?"/)
-    line_count = line_count ? line_count.to_i : strings.length
-    got = line_count.times.map{ @stderr[0].gets }.join
-    strings.each do |string|
-      got.should include(string)
+    until strings.empty?
+      line = @stderr[0].gets
+      strings.reject! do |string|
+        line.include?(string)
+      end
     end
   end
 end
