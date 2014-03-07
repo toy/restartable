@@ -56,13 +56,23 @@ When(/^I interrupt restartable twice$/) do
 end
 
 Then(/^there should be an inner process$/) do
-  Sys::ProcTable.ps.any?{ |pe| pe.ppid == @cpid }
+  Timeout::timeout(5) do
+    until Sys::ProcTable.ps.any?{ |pe| pe.ppid == @pid }
+      sleep 1
+    end
+  end
 end
 
 Then(/^inner process should terminate$/) do
-  Sys::ProcTable.ps.none?{ |pe| pe.ppid == @cpid }
+  Timeout::timeout(100) do
+    until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
+      sleep 1
+    end
+  end
 end
 
 Then(/^restartable should finish$/) do
-  Process.wait(@pid)
+  Timeout::timeout(5) do
+    Process.wait(@pid)
+  end
 end
