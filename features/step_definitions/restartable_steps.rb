@@ -64,5 +64,7 @@ Then(/^inner process should terminate$/) do
 end
 
 Then(/^restartable should finish$/) do
-  Process.wait(@pid)
+  Timeout::timeout(5) do
+    Process.wait(@pid)
+  end
 end
