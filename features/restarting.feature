@@ -28,3 +28,4 @@ Feature: Restarting
       | system 'echo "Hello world!"; 100.times{ sleep 1 }' |
       | fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } |
       | fork{ fork{ fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } } } |
+      | Signal.trap("INT"){}; Signal.trap("TERM"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 } |
