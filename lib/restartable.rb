@@ -19,19 +19,17 @@ private
   def run!
     Signal.trap('INT') do
       interrupt!
-      if @cpid
-        Process.kill('INT', -@cpid) rescue nil
-      end
+      signal_children!('INT') if @cpid
     end
     Signal.trap('TERM') do
       terminate!
+      signal_children!('TERM') if @cpid
     end
 
     until @stop
       @interrupted = nil
       $stderr << "^C to restart, double ^C to stop\n".green
       @cpid = fork do
-        Process.setpgrp
         Signal.trap('INT', 'DEFAULT')
         Signal.trap('TERM', 'DEFAULT')
         @block.call
@@ -68,7 +66,7 @@ private
         WAIT_SIGNALS.each do |time, signal|
           sleep time
           $stderr << "…SIG#{signal}…\n".yellow
-          Process.kill(signal, -@cpid)
+          signal_children!(signal)
         end
       end
       Process.waitall
@@ -85,9 +83,19 @@ private
     end
   end
 
+  def signal_children!(signal)
+    children_pids.each do |pid|
+      begin
+        Process.kill(signal, pid)
+      rescue Errno::ESRCH
+      end
+    end
+  end
+
   def children_pids
+    pgrp = Process.getpgrp
     Sys::ProcTable.ps.select do |pe|
-      @cpid == case
+      pgrp == case
       when pe.respond_to?(:pgid)
         pe.pgid
       when pe.respond_to?(:pgrp)
@@ -97,6 +105,6 @@ private
       else
         raise 'Can\'t find process group id'
       end
-    end.map(&:pid)
+    end.map(&:pid) - [$$]
   end
 end
