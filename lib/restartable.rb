@@ -19,11 +19,9 @@ private
   def run!
     Signal.trap('INT') do
       interrupt!
-      signal_children!('INT') if @cpid
     end
     Signal.trap('TERM') do
       terminate!
-      signal_children!('TERM') if @cpid
     end
 
     until @stop
