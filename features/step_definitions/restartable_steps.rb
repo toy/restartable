@@ -27,21 +27,16 @@ When(/^I have waited for (\d+) second$/) do |seconds|
   sleep seconds.to_i
 end
 
-Then(/^I should see "(.*?)" in stdout$/) do |string|
-  Timeout.timeout(5) do
-    expect(@stdout[0].gets).to include(string)
-  end
-end
-
 Then(/^
   I\ should\ see\ "(.*?)"
-  \ in\ stderr
+  \ in\ std(out|err)
   (?:\ within\ (\d+)\ seconds)?
-$/x) do |arg, timeout|
+$/x) do |arg, io_name, timeout|
+  io = (io_name == 'out' ? @stdout : @stderr)[0]
   Timeout.timeout(timeout ? timeout.to_i : 5) do
     strings = arg.split(/".*?"/)
     until strings.empty?
-      line = @stderr[0].gets
+      line = io.gets
       strings.reject! do |string|
         line.include?(string)
       end
