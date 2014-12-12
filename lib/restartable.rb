@@ -5,6 +5,7 @@ require 'colored'
 require 'thread'
 require 'English'
 
+# Main interface
 class Restartable
   def self.version
     Gem.loaded_specs['restartable'].version.to_s rescue 'DEV'
@@ -18,12 +19,8 @@ class Restartable
 private
 
   def run!
-    Signal.trap('INT') do
-      interrupt!
-    end
-    Signal.trap('TERM') do
-      terminate!
-    end
+    Signal.trap('INT'){ interrupt! }
+    Signal.trap('TERM'){ terminate! }
 
     until @stop
       @interrupted = nil
@@ -86,6 +83,7 @@ private
           sleep 1
         end
       rescue Errno::ESRCH
+        next
       end
     end
   end
@@ -95,6 +93,7 @@ private
       begin
         Process.kill(signal, pid)
       rescue Errno::ESRCH
+        next
       end
     end
   end
@@ -103,14 +102,10 @@ private
     pgrp = Process.getpgrp
     Sys::ProcTable.ps.select do |pe|
       pgrp == case
-      when pe.respond_to?(:pgid)
-        pe.pgid
-      when pe.respond_to?(:pgrp)
-        pe.pgrp
-      when pe.respond_to?(:ppid)
-        pe.ppid
-      else
-        fail 'Can\'t find process group id'
+      when pe.respond_to?(:pgid) then pe.pgid
+      when pe.respond_to?(:pgrp) then pe.pgrp
+      when pe.respond_to?(:ppid) then pe.ppid
+      else fail 'Can\'t find process group id'
       end
     end.map(&:pid) - [$PROCESS_ID]
   end

@@ -57,17 +57,13 @@ end
 
 Then(/^there should be an inner process$/) do
   Timeout.timeout(5) do
-    until Sys::ProcTable.ps.any?{ |pe| pe.ppid == @pid }
-      sleep 1
-    end
+    sleep 1 until Sys::ProcTable.ps.any?{ |pe| pe.ppid == @pid }
   end
 end
 
 Then(/^inner process should terminate$/) do
   Timeout.timeout(100) do
-    until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
-      sleep 1
-    end
+    sleep 1 until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
   end
 end
 
