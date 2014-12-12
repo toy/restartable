@@ -29,7 +29,7 @@ end
 
 Then(/^I should see "(.*?)" in stdout$/) do |string|
   Timeout.timeout(5) do
-    @stdout[0].gets.should include(string)
+    expect(@stdout[0].gets).to include(string)
   end
 end
 
