@@ -59,7 +59,7 @@ private
   WAIT_SIGNALS = [[5, 'INT'], [3, 'INT'], [1, 'INT'], [3, 'TERM'], [5, 'KILL']]
 
   def kill_children!
-    until (pids = children_pids).empty?
+    until children_pids.empty?
       $stderr << "Killing children…\n".yellow.bold
 
       signal_pair = 0
