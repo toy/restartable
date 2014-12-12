@@ -60,24 +60,32 @@ private
   def kill_children!
     until (pids = children_pids).empty?
       $stderr << "Killing children…\n".yellow.bold
-      ripper = Thread.new do
-        WAIT_SIGNALS.each do |time, signal|
-          sleep time
-          $stderr << "…SIG#{signal}…\n".yellow
-          signal_children!(signal)
+
+      signal_pair = 0
+
+      begin
+        time, signal = WAIT_SIGNALS[signal_pair]
+        Timeout.timeout(time) do
+          Process.waitall
+          wait_children
         end
+      rescue Timeout::Error
+        $stderr << "…SIG#{signal}…\n".yellow
+        signal_children!(signal)
+        retry if WAIT_SIGNALS[signal_pair += 1]
       end
-      Process.waitall
-      pids.each do |pid|
-        begin
-          loop do
-            Process.kill(0, pid)
-            sleep 1
-          end
-        rescue Errno::ESRCH
+    end
+  end
+
+  def wait_children
+    children_pids.each do |pid|
+      begin
+        loop do
+          Process.kill(0, pid)
+          sleep 1
         end
+      rescue Errno::ESRCH
       end
-      ripper.terminate
     end
   end
 
