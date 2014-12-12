@@ -4,6 +4,14 @@ rvm:
   - 1.9.3
   - '2.0'
   - '2.1'
-script: bundle exec cucumber
+script:
+  if [ -n "$RUBOCOP" ]; then
+    bundle exec rubocop
+  ; else
+    bundle exec cucumber
+  ; fi
 matrix:
   fast_finish: true
+  include:
+    - env: RUBOCOP=true
+      rvm: default
