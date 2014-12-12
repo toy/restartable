@@ -1,6 +1,7 @@
 Feature: Restarting
 
   Scenario Outline: Restarting and terminating
+    Given I have set on restart to `$stdout.puts 'Restart!'`
     Given I have invoked restartable with `<code>`
 
     When I have waited for 1 second
@@ -13,7 +14,8 @@ Feature: Restarting
     And child process should terminate
 
     When I have waited for 1 second
-    Then I should see "^C to restart, double ^C to stop" in stderr
+    Then I should see "Restart!" in stdout
+    And I should see "^C to restart, double ^C to stop" in stderr
     And I should see "Hello world!" in stdout
     And there should be a child process
     When I interrupt restartable twice
@@ -21,6 +23,7 @@ Feature: Restarting
     And child process should terminate within <timeout> seconds
     And restartable should finish
     And I should not see "Waiting ^C 0.5 second than restart…" in stderr
+    And I should not see "Restart!" in stdout
 
     Examples:
       | code                                                                                           | timeout |
