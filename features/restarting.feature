@@ -20,6 +20,7 @@ Feature: Restarting
     Then I should see "Killing children…" and "Don't restart!" in stderr
     And child process should terminate within <timeout> seconds
     And restartable should finish
+    And I should not see "Waiting ^C 0.5 second than restart…" in stderr
 
     Examples:
       | code                                                                                           | timeout |

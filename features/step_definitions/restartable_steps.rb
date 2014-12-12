@@ -44,6 +44,16 @@ $/x) do |arg, io_name, timeout|
   end
 end
 
+Then(/^I should not see "(.*?)" in std(out|err)$/) do |arg, io_name|
+  io = (io_name == 'out' ? @stdout : @stderr)[0]
+  strings = arg.split(/".*?"/)
+  while (line = io.gets)
+    if strings.any?{ |string| line.include?(string) }
+      fail "Got #{line}"
+    end
+  end
+end
+
 When(/^I interrupt restartable$/) do
   Process.kill('INT', -@pid)
 end
