@@ -27,9 +27,9 @@ end
 
 begin
   option_parser.order!
-  raise OptionParser::ParseError, 'No command to run' if ARGV.empty?
+  fail OptionParser::ParseError, 'No command to run' if ARGV.empty?
 rescue OptionParser::ParseError => e
-  abort "#{e.to_s}\n\n#{option_parser.help}"
+  abort "#{e}\n\n#{option_parser.help}"
 end
 
 Restartable.new(options) do

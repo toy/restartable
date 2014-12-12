@@ -28,13 +28,13 @@ When(/^I have waited for (\d+) second$/) do |seconds|
 end
 
 Then(/^I should see "(.*?)" in stdout$/) do |string|
-  Timeout::timeout(5) do
+  Timeout.timeout(5) do
     @stdout[0].gets.should include(string)
   end
 end
 
 Then(/^I should see "(.*?)" in stderr$/) do |arg|
-  Timeout::timeout(60) do
+  Timeout.timeout(60) do
     strings = arg.split(/".*?"/)
     until strings.empty?
       line = @stderr[0].gets
@@ -56,7 +56,7 @@ When(/^I interrupt restartable twice$/) do
 end
 
 Then(/^there should be an inner process$/) do
-  Timeout::timeout(5) do
+  Timeout.timeout(5) do
     until Sys::ProcTable.ps.any?{ |pe| pe.ppid == @pid }
       sleep 1
     end
@@ -64,7 +64,7 @@ Then(/^there should be an inner process$/) do
 end
 
 Then(/^inner process should terminate$/) do
-  Timeout::timeout(100) do
+  Timeout.timeout(100) do
     until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
       sleep 1
     end
@@ -72,7 +72,7 @@ Then(/^inner process should terminate$/) do
 end
 
 Then(/^restartable should finish$/) do
-  Timeout::timeout(5) do
+  Timeout.timeout(5) do
     Process.wait(@pid)
   end
 end

@@ -3,6 +3,7 @@
 require 'sys/proctable'
 require 'colored'
 require 'thread'
+require 'English'
 
 class Restartable
   def self.version
@@ -109,8 +110,8 @@ private
       when pe.respond_to?(:ppid)
         pe.ppid
       else
-        raise 'Can\'t find process group id'
+        fail 'Can\'t find process group id'
       end
-    end.map(&:pid) - [$$]
+    end.map(&:pid) - [$PROCESS_ID]
   end
 end
