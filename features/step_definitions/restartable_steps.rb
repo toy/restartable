@@ -54,13 +54,13 @@ When(/^I interrupt restartable twice$/) do
   step 'I interrupt restartable'
 end
 
-Then(/^there should be an inner process$/) do
+Then(/^there should be a child process$/) do
   Timeout.timeout(5) do
     sleep 1 until Sys::ProcTable.ps.any?{ |pe| pe.ppid == @pid }
   end
 end
 
-Then(/^inner process should terminate$/) do
+Then(/^child process should terminate$/) do
   Timeout.timeout(100) do
     sleep 1 until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
   end

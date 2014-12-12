@@ -6,19 +6,19 @@ Feature: Restarting
     When I have waited for 1 second
     Then I should see "^C to restart, double ^C to stop" in stderr
     And I should see "Hello world!" in stdout
-    And there should be an inner process
+    And there should be a child process
     When I interrupt restartable
     Then I should see "Killing children…" in stderr
     And I should see "Waiting ^C 0.5 second than restart…" in stderr within <timeout> seconds
-    And inner process should terminate
+    And child process should terminate
 
     When I have waited for 1 second
     Then I should see "^C to restart, double ^C to stop" in stderr
     And I should see "Hello world!" in stdout
-    And there should be an inner process
+    And there should be a child process
     When I interrupt restartable twice
     Then I should see "Killing children…" and "Don't restart!" in stderr
-    And inner process should terminate
+    And child process should terminate
     And restartable should finish
 
     Examples:
