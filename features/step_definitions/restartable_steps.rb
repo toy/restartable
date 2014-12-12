@@ -49,9 +49,9 @@ When(/^I interrupt restartable$/) do
 end
 
 When(/^I interrupt restartable twice$/) do
-  Process.kill('INT', -@pid)
+  step 'I interrupt restartable'
   sleep 0.1
-  Process.kill('INT', -@pid)
+  step 'I interrupt restartable'
 end
 
 Then(/^there should be an inner process$/) do
