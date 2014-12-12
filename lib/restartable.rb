@@ -12,7 +12,8 @@ class Restartable
   end
 
   def initialize(options = {}, &block)
-    @options, @block = options, block
+    @on_restart = Array(options[:on_restart])
+    @block = block
     run!
   end
 
@@ -35,6 +36,7 @@ private
       unless @stop
         $stderr << "Waiting ^C 0.5 second than restart…\n".yellow.bold
         sleep 0.5
+        @on_restart.each(&:call)
       end
     end
   end

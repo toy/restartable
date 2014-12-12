@@ -1,5 +1,9 @@
 require 'restartable'
 
+Given(/^I have set on restart to `(.*?)`$/) do |command|
+  (@on_restart ||= []) << proc{ eval(command) }
+end
+
 Given(/^I have invoked restartable with `(.*?)`$/) do |command|
   @stdout = IO.pipe
   @stderr = IO.pipe
@@ -13,7 +17,7 @@ Given(/^I have invoked restartable with `(.*?)`$/) do |command|
     @stderr[0].close
     STDERR.reopen(@stderr[1])
 
-    Restartable.new do
+    Restartable.new(:on_restart => @on_restart) do
       Signal.trap('INT', 'EXIT')
       eval(command)
     end
