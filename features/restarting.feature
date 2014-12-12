@@ -18,7 +18,7 @@ Feature: Restarting
     And there should be a child process
     When I interrupt restartable twice
     Then I should see "Killing children…" and "Don't restart!" in stderr
-    And child process should terminate
+    And child process should terminate within <timeout> seconds
     And restartable should finish
 
     Examples:

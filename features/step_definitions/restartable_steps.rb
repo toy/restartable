@@ -60,8 +60,8 @@ Then(/^there should be a child process$/) do
   end
 end
 
-Then(/^child process should terminate$/) do
-  Timeout.timeout(100) do
+Then(/^child process should terminate(?: within (\d+) seconds)?$/) do |timeout|
+  Timeout.timeout(timeout ? timeout.to_i : 5) do
     sleep 1 until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
   end
 end
