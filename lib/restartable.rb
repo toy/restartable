@@ -33,11 +33,11 @@ private
       end
       sleep 0.1 until @interrupted
       kill_children!
-      unless @stop
-        $stderr << "Waiting ^C 0.5 second than restart…\n".yellow.bold
-        sleep 0.5
-        @on_restart.each(&:call)
-      end
+      break if @stop
+      $stderr << "Waiting ^C 0.5 second than restart…\n".yellow.bold
+      sleep 0.5
+      break if @stop
+      @on_restart.each(&:call)
     end
   end
 
