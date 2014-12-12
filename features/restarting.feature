@@ -8,7 +8,8 @@ Feature: Restarting
     And I should see "Hello world!" in stdout
     And there should be an inner process
     When I interrupt restartable
-    Then I should see "Killing children…" and "Waiting ^C 0.5 second than restart…" in stderr
+    Then I should see "Killing children…" in stderr
+    And I should see "Waiting ^C 0.5 second than restart…" in stderr within <timeout> seconds
     And inner process should terminate
 
     When I have waited for 1 second
@@ -21,12 +22,12 @@ Feature: Restarting
     And restartable should finish
 
     Examples:
-      | code                                                                                           |
-      | $stdout.puts "Hello world!"                                                                    |
-      | $stdout.puts "Hello world!"; 100.times{ sleep 1 }                                              |
-      | exec 'echo "Hello world!"; sleep 100'                                                          |
-      | system 'echo "Hello world!"; sleep 100'                                                        |
-      | fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } }                                      |
-      | fork{ fork{ fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } } }                      |
-      | Signal.trap("INT"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 }                        |
-      | Signal.trap("INT"){}; Signal.trap("TERM"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 } |
+      | code                                                                                           | timeout |
+      | $stdout.puts "Hello world!"                                                                    | 5       |
+      | $stdout.puts "Hello world!"; 100.times{ sleep 1 }                                              | 5       |
+      | exec 'echo "Hello world!"; sleep 100'                                                          | 5       |
+      | system 'echo "Hello world!"; sleep 100'                                                        | 5       |
+      | fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } }                                      | 5       |
+      | fork{ fork{ fork{ $stdout.puts "Hello world!"; 100.times{ sleep 1 } } } }                      | 5       |
+      | Signal.trap("INT"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 }                        | 15      |
+      | Signal.trap("INT"){}; Signal.trap("TERM"){}; $stdout.puts "Hello world!"; 100.times{ sleep 1 } | 25      |

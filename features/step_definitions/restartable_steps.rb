@@ -33,8 +33,12 @@ Then(/^I should see "(.*?)" in stdout$/) do |string|
   end
 end
 
-Then(/^I should see "(.*?)" in stderr$/) do |arg|
-  Timeout.timeout(60) do
+Then(/^
+  I\ should\ see\ "(.*?)"
+  \ in\ stderr
+  (?:\ within\ (\d+)\ seconds)?
+$/x) do |arg, timeout|
+  Timeout.timeout(timeout ? timeout.to_i : 5) do
     strings = arg.split(/".*?"/)
     until strings.empty?
       line = @stderr[0].gets
