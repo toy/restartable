@@ -6,3 +6,5 @@ rvm:
   - 2.0.0
   - ree
 script: bundle exec cucumber
+matrix:
+  fast_finish: true
