@@ -3,6 +3,7 @@
 require 'sys/proctable'
 require 'colored'
 require 'thread'
+require 'timeout'
 require 'English'
 
 # Main interface
