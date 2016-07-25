@@ -9,7 +9,9 @@ require 'English'
 # Main interface
 class Restartable
   def self.version
-    Gem.loaded_specs['restartable'].version.to_s rescue 'DEV'
+    Gem.loaded_specs['restartable'].version.to_s
+  rescue
+    'DEV'
   end
 
   def initialize(options = {}, &block)
@@ -56,7 +58,13 @@ private
     interrupt!
   end
 
-  WAIT_SIGNALS = [[5, 'INT'], [3, 'INT'], [1, 'INT'], [3, 'TERM'], [5, 'KILL']]
+  WAIT_SIGNALS = [
+    [5, 'INT'],
+    [3, 'INT'],
+    [1, 'INT'],
+    [3, 'TERM'],
+    [5, 'KILL'],
+  ].freeze
 
   def kill_children!
     until children_pids.empty?
