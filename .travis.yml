@@ -14,4 +14,4 @@ matrix:
   fast_finish: true
   include:
     - env: RUBOCOP=true
-      rvm: default
+      rvm: '2'
