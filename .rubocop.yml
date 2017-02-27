@@ -3,7 +3,7 @@ AllCops:
     - '*.gemspec'
 
 Lint/EndAlignment:
-  AlignWith: variable
+  EnforcedStyleAlignWith: variable
 
 Lint/Eval:
   Enabled: false
@@ -21,7 +21,7 @@ Style/BracesAroundHashParameters:
   Enabled: false
 
 Style/CaseIndentation:
-  IndentWhenRelativeTo: end
+  EnforcedStyle: end
 
 Style/DotPosition:
   EnforcedStyle: trailing
