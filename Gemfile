@@ -7,4 +7,6 @@ if RUBY_VERSION < '1.9.3'
   gem 'sys-proctable', '< 0.9.9'
 end
 
-gem 'travis_check_rubies', '~> 0.1'
+if RUBY_VERSION >= '2.0'
+  gem 'travis_check_rubies', '~> 0.2'
+end
