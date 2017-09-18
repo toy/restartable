@@ -14,6 +14,9 @@ Layout/DotPosition:
 Layout/IndentHash:
   EnforcedStyle: consistent
 
+Layout/IndentHeredoc:
+  Enabled: false
+
 Layout/SpaceBeforeBlockBraces:
   EnforcedStyle: no_space
 
@@ -22,6 +25,9 @@ Layout/SpaceInsideHashLiteralBraces:
 
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
+
+Lint/RescueWithoutErrorClass:
+  Enabled: false
 
 Metrics/AbcSize:
   Max: 20
