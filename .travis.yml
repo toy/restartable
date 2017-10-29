@@ -14,6 +14,8 @@ before_install:
 script: bundle exec cucumber
 matrix:
   include:
+    - os: osx
+      rvm: default
     - env: RUBOCOP=✓
       rvm: '2.4.2'
       script: bundle exec rubocop
