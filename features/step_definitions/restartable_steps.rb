@@ -1,5 +1,17 @@
 require 'restartable'
 
+def children
+  Sys::ProcTable.ps.select do |pe|
+    next if pe.pid == @pid
+    @pid == case
+    when pe.respond_to?(:pgid) then pe.pgid
+    when pe.respond_to?(:pgrp) then pe.pgrp
+    when pe.respond_to?(:ppid) then pe.ppid
+    else fail 'Can\'t find process group id'
+    end
+  end
+end
+
 Given(/^I have set on restart to `(.*?)`$/) do |command|
   (@on_restart ||= []) << proc{ eval(command) }
 end
@@ -70,13 +82,13 @@ end
 
 Then(/^there should be a child process$/) do
   Timeout.timeout(5) do
-    sleep 1 until Sys::ProcTable.ps.any?{ |pe| pe.ppid == @pid }
+    sleep 0.3 while children.empty?
   end
 end
 
 Then(/^child process should terminate(?: within (\d+) seconds)?$/) do |timeout|
   Timeout.timeout(timeout ? timeout.to_i : 5) do
-    sleep 1 until Sys::ProcTable.ps.none?{ |pe| pe.ppid == @pid }
+    sleep 0.3 until children.empty?
   end
 end
 
