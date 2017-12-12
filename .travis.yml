@@ -11,7 +11,7 @@ rvm:
 before_install:
   - gem update --system
   - gem update bundler
-script: bundle exec cucumber
+script: bundle exec cucumber --expand
 matrix:
   include:
     - os: osx
