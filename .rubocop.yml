@@ -29,9 +29,6 @@ Layout/SpaceInsideHashLiteralBraces:
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
 
-Lint/RescueWithoutErrorClass:
-  Enabled: false
-
 Metrics/AbcSize:
   Max: 20
 
@@ -58,7 +55,10 @@ Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
 Style/IfUnlessModifier:
-  MaxLineLength: 40
+  Enabled: false
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit
 
 Style/Semicolon:
   AllowAsExpressionSeparator: true
