@@ -26,7 +26,7 @@ Feature: Restarting
 
     Examples:
       | code                                                                                           | timeout |
-      | $stdout.puts "Hello world!"                                                                    | 5       |
+      | $stdout.puts "Hello world!"; sleep 100                                                         | 5       |
       | $stdout.puts "Hello world!"; 100.times{ sleep 1 }                                              | 5       |
       | exec 'echo "Hello world!"; sleep 100'                                                          | 5       |
       | system 'echo "Hello world!"; sleep 100'                                                        | 5       |
