@@ -12,11 +12,11 @@ def children
   end
 end
 
-Given(/^I have set on restart to `(.*?)`$/) do |command|
+Given(/^I have set on restart to `(.+)`$/) do |command|
   (@on_restart ||= []) << proc{ eval(command) }
 end
 
-Given(/^I have invoked restartable with `(.*?)`$/) do |command|
+Given(/^I have invoked restartable with `(.+)`$/) do |command|
   @stdout = IO.pipe
   @stderr = IO.pipe
 
@@ -43,14 +43,13 @@ When(/^I have waited for (\d+) second$/) do |seconds|
   sleep seconds.to_i
 end
 
-Then(/^
-  I\ should\ see\ "(.*?)"
-  \ in\ std(out|err)
-  (?:\ within\ (\d+)\ seconds)?
-$/x) do |arg, io_name, timeout|
+Then(/^I should see "(.+)" in std(out|err)$/) do |arg, io_name|
+  step %(I should see "#{arg}" in std#{io_name} within 5 seconds)
+end
+Then(/^I should see "(.+)" in std(out|err) within (\d+) seconds$/) do |arg, io_name, timeout|
   io = (io_name == 'out' ? @stdout : @stderr)[0]
-  Timeout.timeout(timeout ? timeout.to_i : 5) do
-    strings = arg.split(/".*?"/)
+  Timeout.timeout(timeout.to_i) do
+    strings = arg.split(/".+?"/)
     until strings.empty?
       line = io.gets
       strings.reject! do |string|
@@ -60,9 +59,9 @@ $/x) do |arg, io_name, timeout|
   end
 end
 
-Then(/^I should not see "(.*?)" in std(out|err)$/) do |arg, io_name|
+Then(/^I should not see "(.+)" in std(out|err)$/) do |arg, io_name|
   io = (io_name == 'out' ? @stdout : @stderr)[0]
-  strings = arg.split(/".*?"/)
+  strings = arg.split(/".+?"/)
   while (line = io.gets)
     if strings.any?{ |string| line.include?(string) }
       fail "Got #{line}"
@@ -86,8 +85,11 @@ Then(/^there should be a child process$/) do
   end
 end
 
-Then(/^child process should terminate(?: within (\d+) seconds)?$/) do |timeout|
-  Timeout.timeout(timeout ? timeout.to_i : 5) do
+Then(/^child process should terminate$/) do
+  step %(child process should terminate within 5 seconds)
+end
+Then(/^child process should terminate within (\d+) seconds$/) do |timeout|
+  Timeout.timeout(timeout.to_i) do
     sleep 0.3 until children.empty?
   end
 end
