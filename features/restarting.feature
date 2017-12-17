@@ -9,7 +9,6 @@ Feature: Restarting
     And I should see "Hello world!" in stdout
     And there should be a child process
     When I interrupt restartable
-    Then I should see "Killing children…" in stderr
     And I should see "Waiting ^C 0.5 second than restart…" in stderr within <timeout> seconds
     And child process should terminate
 
@@ -19,7 +18,7 @@ Feature: Restarting
     And I should see "Hello world!" in stdout
     And there should be a child process
     When I interrupt restartable twice
-    Then I should see "Killing children…" and "Don't restart!" in stderr
+    Then I should see "Don't restart!" in stderr
     And child process should terminate within <timeout> seconds
     And restartable should finish
     And I should not see "Waiting ^C 0.5 second than restart…" in stderr
