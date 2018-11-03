@@ -3,6 +3,7 @@ require 'restartable'
 def children
   Sys::ProcTable.ps.select do |pe|
     next if pe.pid == @pid
+
     @pid == case
     when pe.respond_to?(:pgid) then pe.pgid
     when pe.respond_to?(:pgrp) then pe.pgrp

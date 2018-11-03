@@ -29,6 +29,9 @@ Layout/SpaceInsideHashLiteralBraces:
 Lint/EndAlignment:
   EnforcedStyleAlignWith: variable
 
+Lint/UnneededRequireStatement:
+  Enabled: false
+
 Metrics/AbcSize:
   Max: 20
 
@@ -72,5 +75,8 @@ Style/SignalException:
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: no_comma
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma

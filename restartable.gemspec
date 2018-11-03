@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'sys-proctable', '~> 0.9.3'
   s.add_development_dependency 'cucumber'
   if RUBY_VERSION >= '2.1'
-    s.add_development_dependency 'rubocop', '~> 0.52'
+    s.add_development_dependency 'rubocop', '~> 0.53'
   end
 end
