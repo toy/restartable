@@ -30,7 +30,7 @@ Given(/^I have invoked restartable with `(.+)`$/) do |command|
     @stderr[0].close
     STDERR.reopen(@stderr[1])
 
-    Restartable.new(:on_restart => @on_restart) do
+    Restartable.new(on_restart: @on_restart) do
       Signal.trap('INT', 'EXIT')
       eval(command)
     end
