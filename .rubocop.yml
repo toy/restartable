@@ -8,7 +8,10 @@ Layout/AccessModifierIndentation:
 Layout/CaseIndentation:
   EnforcedStyle: end
 
-Layout/IndentHash:
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Layout/IndentFirstHashElement:
   EnforcedStyle: consistent
 
 Layout/IndentHeredoc:
@@ -19,9 +22,6 @@ Layout/SpaceBeforeBlockBraces:
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
-
-Lint/EndAlignment:
-  EnforcedStyleAlignWith: variable
 
 Lint/UnneededRequireStatement:
   Enabled: false
