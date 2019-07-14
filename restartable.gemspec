@@ -10,8 +10,6 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.0'
 
-  s.rubyforge_project = s.name
-
   s.metadata = {
     'bug_tracker_uri'   => "https://github.com/toy/#{s.name}/issues",
     'documentation_uri' => "https://www.rubydoc.info/gems/#{s.name}/#{s.version}",
