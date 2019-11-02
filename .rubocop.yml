@@ -23,7 +23,7 @@ Layout/SpaceBeforeBlockBraces:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Lint/UnneededRequireStatement:
+Lint/RedundantRequireStatement:
   Enabled: false
 
 Metrics/AbcSize:
