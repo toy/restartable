@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name        = 'restartable'
   s.version     = '1.1.1'
   s.summary     = %q{Run code, Ctrl-C to restart, once more Ctrl-C to stop}
-  s.homepage    = "http://github.com/toy/#{s.name}"
+  s.homepage    = "https://github.com/toy/#{s.name}"
   s.authors     = ['Ivan Kuchin']
   s.license     = 'MIT'
 
