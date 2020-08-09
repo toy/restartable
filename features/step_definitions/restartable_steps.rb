@@ -27,10 +27,10 @@ Given(/^I have invoked restartable with `(.+)`$/) do |command|
     Process.setpgrp
 
     @stdout[0].close
-    STDOUT.reopen(@stdout[1])
+    $stdout.reopen(@stdout[1])
 
     @stderr[0].close
-    STDERR.reopen(@stderr[1])
+    $stderr.reopen(@stderr[1])
 
     Restartable.new(on_restart: @on_restart) do
       Signal.trap('INT', 'EXIT')
