@@ -91,25 +91,29 @@ private
 
   def wait_children
     children_pids.each do |pid|
-      begin
-        loop do
-          Process.kill(0, pid)
-          sleep 1
-        end
-      rescue Errno::ESRCH
-        next
-      end
+      wait_child(pid)
     end
+  end
+
+  def wait_child(pid)
+    loop do
+      Process.kill(0, pid)
+      sleep 1
+    end
+  rescue Errno::ESRCH
+    # noop
   end
 
   def signal_children!(signal)
     children_pids.each do |pid|
-      begin
-        Process.kill(signal, pid)
-      rescue Errno::ESRCH
-        next
-      end
+      signal_child!(signal, pid)
     end
+  end
+
+  def signal_child!(signal, pid)
+    Process.kill(signal, pid)
+  rescue Errno::ESRCH
+    # noop
   end
 
   def children_pids
