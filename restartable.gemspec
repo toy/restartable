@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'colored', '~> 1.2'
   s.add_dependency 'sys-proctable', '>= 0.9.3', '<= 2.0'
   s.add_development_dependency 'cucumber'
-  if RUBY_VERSION >= '2.4'
-    s.add_development_dependency 'rubocop', '~> 1.0'
+  if RUBY_VERSION >= '2.5'
+    s.add_development_dependency 'rubocop', '~> 1.22'
   end
 end
