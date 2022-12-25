@@ -1,6 +1,6 @@
 [![Gem Version](https://img.shields.io/gem/v/restartable?logo=rubygems)](https://rubygems.org/gems/restartable)
-[![Build Status](https://img.shields.io/github/workflow/status/toy/restartable/check/master?logo=github)](https://github.com/toy/restartable/actions/workflows/check.yml)
-[![Rubocop](https://img.shields.io/github/workflow/status/toy/restartable/rubocop/master?label=rubocop&logo=rubocop)](https://github.com/toy/restartable/actions/workflows/rubocop.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/toy/restartable/check.yml?logo=github)](https://github.com/toy/restartable/actions/workflows/check.yml)
+[![Rubocop](https://img.shields.io/github/actions/workflow/status/toy/restartable/rubocop.yml?label=rubocop&logo=rubocop)](https://github.com/toy/restartable/actions/workflows/rubocop.yml)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/toy/restartable?logo=codeclimate)](https://codeclimate.com/github/toy/restartable)
 [![Depfu](https://img.shields.io/depfu/toy/restartable)](https://depfu.com/github/toy/restartable)
 
